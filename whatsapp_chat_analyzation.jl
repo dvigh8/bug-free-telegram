@@ -24,6 +24,7 @@ for x in l
     global message_count
     global chat_admin_opperations
     
+
     x = Unicode.normalize(x, stripignore=true)
     if occursin(message_regex,x)
         push!(messages,x)
@@ -40,7 +41,7 @@ for x in l
             err_dict[message_count - 1] = x
             
         end
-        err_count += 1
+        err_count +=1
     end
     count += 1
 end
@@ -54,31 +55,37 @@ println(err_count, " Err count")
 println(count, " Total count")
 
 decomposed_messages = []
-i=1
 
 for s in messages
 
-    global i
     global decomposed_messages
 
-    i += 1
+    date_end = first(findfirst(",",s)) - 1
     if s[1:1] == "["
-        date = s[2:8]
-        time = s[11:18]
-        rest_message = s[21:end]
+        
+        date = s[2:date_end]
+        time = s[date_end + 3:date_end + 10]
+        rest_message = s[date_end + 13:end]
+        message_type = "apple"
         
     else
-        date = s[1:7]
-        time = s[10:14]
-        rest_message = s[18:end]
+        date = s[1:date_end]
+        time = s[date_end + 3:date_end + 7]
+        rest_message = s[date_end + 11:end]
+        message_type = "android"
 
     end
 
     sender = rest_message[1:first(findfirst(":",rest_message)) - 1]
     message = rest_message[first(findfirst(":",rest_message)) + 2:end]
-    push!(decomposed_messages,[date, time, sender, message])
+    push!(decomposed_messages,[date, time, sender, message, message_type])
     
 end 
 
-println(decomposed_messages[1])
+senders = Dict()
+for x in decomposed_messages
+    global senders
+    senders[x[3]] = x[3]
+end
+senders
 
